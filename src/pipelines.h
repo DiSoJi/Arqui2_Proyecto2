@@ -1,0 +1,12 @@
+//
+// Created by disojivm on 5/8/19.
+//
+
+#ifndef ARQUI2_PROYECTO2_PIPELINES_H
+#define ARQUI2_PROYECTO2_PIPELINES_H
+
+
+
+
+
+#endif //ARQUI2_PROYECTO2_PIPELINES_H
