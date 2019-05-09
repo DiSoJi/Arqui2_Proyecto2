@@ -60,8 +60,9 @@ public:
         }
     }
 
-    reg get_register(int reg_name){
-        return regs[reg_name];
+    reg* get_register(int reg_name1,int reg_name2){
+        reg outputregs[2] = {regs[reg_name1],regs[reg_name2]};
+        return outputregs;
     }
 
 };
