@@ -55,8 +55,9 @@ public:
     reg_mem(){
         regs = (reg*)malloc(REGISTER_BANK_SIZE * (sizeof(reg)));
         for (int i = 0; i<REGISTER_BANK_SIZE; i++){
-            reg rg;
-            regs[i] = rg;
+            reg* rg = new reg();
+            regs[i] = *rg;
+            free(rg);
         }
     }
 
