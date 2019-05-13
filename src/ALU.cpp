@@ -13,13 +13,14 @@
 
 class adder{
 public:
-    char  *input1;
-    char  *input2;
-    char  *output;
+    int  *input1;
+    int  *input2;
+    int  *output;
     adder(){
-        input1 = (char*)malloc(sizeof(char));
-        input2 = (char*)malloc(sizeof(char));
-        output = (char*)malloc(sizeof(char));
+        input1 = (int*)malloc(sizeof(char));
+        input2 = (int*)malloc(sizeof(char));
+        output = (int*)malloc(sizeof(char));
+        *output = 0;
     };
 
     void operate(){
@@ -31,13 +32,13 @@ public:
 
 class subber{
 public:
-    char  *input1;
-    char  *input2;
-    char  *output;
+    int   *input1;
+    int   *input2;
+    int   *output;
     subber(){
-        input1 = (char*)malloc(sizeof(char));
-        input2 = (char*)malloc(sizeof(char));
-        output = (char*)malloc(sizeof(char));
+        input1 = (int *)malloc(sizeof(char));
+        input2 = (int *)malloc(sizeof(char));
+        output = (int *)malloc(sizeof(char));
     };
 
     void operate(){
@@ -52,10 +53,12 @@ public:
     char  *input1;
     char  *input2;
     char  *output;
+    char  *op;
     xorer(){
         input1 = (char*)malloc(sizeof(char));
         input2 = (char*)malloc(sizeof(char));
         output = (char*)malloc(sizeof(char));
+        op = (char*)malloc(sizeof(char));
     };
 
     void operate(){
@@ -66,15 +69,17 @@ public:
 
 class ALU {
 public:
-    bool* signals;
+    //reg * mask_vector; //useless
+    int operation;
     reg * output;
     reg * input1;
     reg * input2;
     ALU(){
-        signals = (bool *)malloc(4*sizeof(bool));
+        //mask_vector = new reg();
         input1 = new reg();
         input2 = new reg();
         output = new reg();
+        operation = 0;
     }
 
 private:
@@ -95,29 +100,36 @@ private:
     xorer xor_l4;
 
 public:
+    void operate(){
+        if (operation == 0) add_v();
+        if (operation == 3) subs_v();
+        if (operation == 15) *output = *input1;
+        //if (operation == 1) addv_s();
+        /*if (operation == 2) adds();
+         * if (operation == 4) subv_s();
+         *
+         * */
+    }
     void add_v(){
         //Pass to the 4 lanes the first 4 elements from input1;
-        char input1_l1 = (*input1).get_data(0);
+        int  input1_l1 = (*input1).get_data(0);
         add_l1.input1 = &input1_l1;
-        char input1_l2 = (*input1).get_data(1);
+        int  input1_l2 = (*input1).get_data(1);
         add_l2.input1 = &input1_l2;
-        char input1_l3 = (*input1).get_data(2);
+        int  input1_l3 = (*input1).get_data(2);
         add_l3.input1 = &input1_l3;
-        char input1_l4 = (*input1).get_data(3);
+        int  input1_l4 = (*input1).get_data(3);
         add_l4.input1 = &input1_l4;
         //Operate 4 lanes with first
-        char input2_l1 = (*input2).get_data(0);
+        int  input2_l1 = (*input2).get_data(0);
         add_l1.input2 = &input2_l1;
-        char input2_l2 = (*input2).get_data(1);
+        int  input2_l2 = (*input2).get_data(1);
         add_l2.input2 = &input2_l2;
-        char input2_l3 = (*input2).get_data(2);
+        int  input2_l3 = (*input2).get_data(2);
         add_l3.input2 = &input2_l3;
-        char input2_l4 = (*input2).get_data(3);
+        int  input2_l4 = (*input2).get_data(3);
         add_l4.input2 = &input2_l4;
-        //int a = 0;
-        //pthread_create(NULL,NULL,(THREADFUNCPTR)add_l1.add(),NULL)
-        //pthread_create(a,NULL,add_l1.add(),NULL);
-        //omp_set_num_threads(4);
+
         #pragma omp parallel
         {
             add_l1.operate();
@@ -134,8 +146,6 @@ public:
             (*output).set_data(2, *add_l3.output);
             (*output).set_data(3, *add_l4.output);
         }
-        //printf("Before wait");
-        //sigwait( &signal_set, &sig_int);
 
         input1_l1 = (*input1).get_data(4);
         add_l1.input1 = &input1_l1;
@@ -172,24 +182,25 @@ public:
         }
 
     };
+    //Substraction function
     void subs_v(){
         //Pass to the 4 lanes the first 4 elements from input1;
-        char input1_l1 = (*input1).get_data(0);
+        int  input1_l1 = (*input1).get_data(0);
         sub_l1.input1 = &input1_l1;
-        char input1_l2 = (*input1).get_data(1);
+        int  input1_l2 = (*input1).get_data(1);
         sub_l2.input1 = &input1_l2;
-        char input1_l3 = (*input1).get_data(2);
+        int  input1_l3 = (*input1).get_data(2);
         sub_l3.input1 = &input1_l3;
-        char input1_l4 = (*input1).get_data(3);
+        int  input1_l4 = (*input1).get_data(3);
         sub_l4.input1 = &input1_l4;
         //Operate 4 lanes with first
-        char input2_l1 = (*input2).get_data(0);
+        int  input2_l1 = (*input2).get_data(0);
         sub_l1.input2 = &input2_l1;
-        char input2_l2 = (*input2).get_data(1);
+        int  input2_l2 = (*input2).get_data(1);
         sub_l2.input2 = &input2_l2;
-        char input2_l3 = (*input2).get_data(2);
+        int  input2_l3 = (*input2).get_data(2);
         sub_l3.input2 = &input2_l3;
-        char input2_l4 = (*input2).get_data(3);
+        int  input2_l4 = (*input2).get_data(3);
         sub_l4.input2 = &input2_l4;
         //int a = 0;
         //pthread_create(NULL,NULL,(THREADFUNCPTR)add_l1.add(),NULL)
